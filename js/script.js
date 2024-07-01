@@ -27,9 +27,10 @@ const gameboard = (function (){
     }
 
     function resetBoard(){
-        for (let row = 0; row < boardGrid.length; row++){
-            gameboard[row] = [null, null, null];
-        };
+        const resetedBoard = [[null, null, null],
+                              [null, null, null],
+                              [null, null, null]];
+        boardGrid.splice(0, 3, ...resetedBoard);
     }
 
     return {setMarker, showBoard, getBoard, resetBoard};
