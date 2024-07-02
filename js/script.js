@@ -55,7 +55,7 @@ const ticTacToe = (function(board){
 
     let playerIndexTurn = 0;
     function play(){
-        while(checkEmptySpace() && !checkWhoWin()){
+        while(checkEmptySpace() && !checkWin()){
             const row = parseInt(prompt("Input row"));
             const column = parseInt(prompt("Input column"));
 
@@ -70,7 +70,7 @@ const ticTacToe = (function(board){
         showWinner(players[playerIndexTurn = playerIndexTurn === 0 ? 1 : 0]);
     }
 
-    function checkWhoWin(){
+    function checkWin(){
         const boardGrid = board.getBoard();
         //win by closing row
         for(row of boardGrid){
@@ -116,7 +116,12 @@ const ticTacToe = (function(board){
     }
 
     function showWinner(winner){
-        console.log(`${winner.getPlayerName()} won!`);
+        if(checkWin()){
+            console.log(`${winner.getPlayerName()} won!`);
+        } else {
+            console.log("It's a tie!")
+        }
+        
     }
 
     return {play};
