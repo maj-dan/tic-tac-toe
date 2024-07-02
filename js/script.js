@@ -27,10 +27,9 @@ const gameboard = (function (){
     }
 
     function resetBoard(){
-        const resetedBoard = [[null, null, null],
-                              [null, null, null],
-                              [null, null, null]];
-        boardGrid.splice(0, 3, ...resetedBoard);
+        for (let i = 0; i < boardGrid.length; i++) {
+            boardGrid[i] = [null, null, null];
+        }
     }
 
     return {setMarker, showBoard, getBoard, resetBoard};
@@ -92,7 +91,7 @@ const ticTacToe = (function(board){
 
     function checkColumnEqual(boardGrid, column) {
         return (boardGrid[0][column] === boardGrid[1][column] &&
-                boardGrid[0][column] === boardGrid[1][column]);
+                boardGrid[0][column] === boardGrid[2][column]);
     }
 
     function checkDiagonalEqual(boardGrid){
