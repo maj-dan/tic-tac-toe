@@ -1,12 +1,3 @@
-/*
-    -Gameboard (grid): nested array with column and rows,
-    setMarker (write the player maker to selected cell), check if there is an empty
-
-    -Player: maker, getMarker
-
-    -Game: create Players, play while game is not over or there is space left
-*/
-
 const gameboard = (function (){
     const boardGrid = [[null, null, null],[null, null, null],[null, null, null]];
 
@@ -86,8 +77,9 @@ const ticTacToe = (function(board){
             }
         }
         //win by closing diagonal
+        //the center cell is the same for both diagonals
         if(checkDiagonalEqual(boardGrid) && !!boardGrid[1][1]){
-            return true;//is the same value in both diagonals
+            return true;
         }
         return false;
     }
@@ -119,7 +111,7 @@ const ticTacToe = (function(board){
         if(checkWin()){
             console.log(`${winner.getPlayerName()} won!`);
         } else {
-            console.log("It's a tie!")
+            console.log("It's a tie!");
         }
         
     }
