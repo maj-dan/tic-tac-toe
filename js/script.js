@@ -35,18 +35,23 @@ const gameboard = (function (){
     return {setMarker, showBoard, getBoard, resetBoard};
 })();
 
-function makePlayer(char) {
+function makePlayer(name, char) {
+    const playerName = name;
     const marker = char;
+
+    function getPlayerName(){
+        return playerName;
+    }
 
     function getMarker(){
         return marker;
     }
 
-    return {getMarker}
+    return {getMarker, getPlayerName};
 }
 
 const ticTacToe = (function(board){
-    const players = [makePlayer("X"), makePlayer("O")]
+    const players = [makePlayer("Player 1","X"), makePlayer("Player 2","O")]
 
     let playerIndexTurn = 0;
     function play(){
@@ -61,6 +66,8 @@ const ticTacToe = (function(board){
             board.showBoard();
         }
         board.resetBoard();
+        //Who played the last turn won and deserves to start new round first
+        showWinner(players[playerIndexTurn = playerIndexTurn === 0 ? 1 : 0]);
     }
 
     function checkWhoWin(){
@@ -69,18 +76,18 @@ const ticTacToe = (function(board){
         for(row of boardGrid){
             //ckeck if it's null, otherwise game ends in the start
             if(checkRowEqual(row) && !(row.includes(null))){
-                return row[0];
+                return true;
             }
         }
         //win by closing column
         for(let column = 0; column < boardGrid.length; column++){
             if(checkColumnEqual(boardGrid, column) && boardGrid[0][column] !== null){
-                    return boardGrid[0][column];
+                    return true;
             }
         }
         //win by closing diagonal
         if(checkDiagonalEqual(boardGrid) && !!boardGrid[1][1]){
-            return boardGrid[1][1];//is the same value in both diagonals
+            return true;//is the same value in both diagonals
         }
         return false;
     }
@@ -106,6 +113,10 @@ const ticTacToe = (function(board){
             if(row.includes(null)) return true;
         }
         return false;
+    }
+
+    function showWinner(winner){
+        console.log(`${winner.getPlayerName()} won!`);
     }
 
     return {play};
