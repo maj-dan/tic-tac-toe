@@ -42,14 +42,15 @@ function makePlayer(name, char) {
 }
 
 const ticTacToe = (function(board){
-    const players = [makePlayer("Player 1","X"), makePlayer("Player 2","O")]
+    const players = [makePlayer("Player 1","X"), makePlayer("Player 2","O")];
+    let hasWinner = false;
 
     let playerIndexTurn = 0;
     function play(event){
         if(event.target.tagName !== "LI") return;
 
         display.setData();
-        if(checkEmptySpace() && !checkWin()){
+        if(checkEmptySpace() && !hasWinner){
             const row = parseInt(event.target.dataset.row);
             const column = parseInt(event.target.dataset.column);
 
@@ -59,12 +60,15 @@ const ticTacToe = (function(board){
 
             display.render(board.getBoard());
 
-            if (checkWin()){
+            hasWinner = checkWin();
+            if (hasWinner){
                 //Who played the last turn won and deserves to start new round first
-                showWinner(players[playerIndexTurn = playerIndexTurn === 0 ? 1 : 0]); 
+                const indexOfWinner = playerIndexTurn === 0 ? 1 : 0;
+                showWinner(players[indexOfWinner]);
+                playerIndexTurn = indexOfWinner;
+                board.resetBoard();  
+                hasWinner = false;
             }
-        } else {
-            board.resetBoard();  
         }
     }
 
