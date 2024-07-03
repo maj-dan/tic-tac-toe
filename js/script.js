@@ -118,3 +118,7 @@ const ticTacToe = (function(board){
 
     return {play};
 })(gameboard);
+
+const display = (function(){
+
+})();
