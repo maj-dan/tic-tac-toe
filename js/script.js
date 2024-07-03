@@ -45,20 +45,27 @@ const ticTacToe = (function(board){
     const players = [makePlayer("Player 1","X"), makePlayer("Player 2","O")]
 
     let playerIndexTurn = 0;
-    function play(){
-        while(checkEmptySpace() && !checkWin()){
-            const row = parseInt(prompt("Input row"));
-            const column = parseInt(prompt("Input column"));
+    function play(event){
+        if(event.target.tagName !== "LI") return;
+
+        display.setData();
+        if(checkEmptySpace() && !checkWin()){
+            const row = parseInt(event.target.dataset.row);
+            const column = parseInt(event.target.dataset.column);
 
             if (board.setMarker(row, column, players[playerIndexTurn].getMarker())){
                 playerIndexTurn = playerIndexTurn === 0 ? 1 : 0;
             }
 
-            board.showBoard();
+            display.render(board.getBoard());
+
+            if (checkWin()){
+                //Who played the last turn won and deserves to start new round first
+                showWinner(players[playerIndexTurn = playerIndexTurn === 0 ? 1 : 0]); 
+            }
+        } else {
+            board.resetBoard();  
         }
-        board.resetBoard();
-        //Who played the last turn won and deserves to start new round first
-        showWinner(players[playerIndexTurn = playerIndexTurn === 0 ? 1 : 0]);
     }
 
     function checkWin(){
@@ -120,5 +127,23 @@ const ticTacToe = (function(board){
 })(gameboard);
 
 const display = (function(){
+    const cells = document.querySelectorAll("ul > li");
+    const board = document.querySelector("ul");
 
+    board.addEventListener("click", ticTacToe.play);
+
+    function render(boardContent){
+        for(let i = 0; i < cells.length; i++){
+            cells[i].textContent = boardContent.flat()[i];
+        }
+    }
+
+    function setData(){
+        for (let i = 0; i < cells.length; i++){
+            cells[i].dataset.row = `${Math.floor(i / 3)}`;
+            cells[i].dataset.column = `${i % 3}`;
+        }
+    }
+
+    return {render, setData};
 })();
