@@ -7,37 +7,38 @@
     <title>Tic Tac Toe</title>
 </head>
 <body>
-    <h1>Tic Tac Toe</h1>
-
-    <div>
-        <h2 id="winner-display"></h2>
-        <ul>
-            <li></li>
-            <li></li>
-            <li></li>
-            <li></li>
-            <li></li>
-            <li></li>
-            <li></li>
-            <li></li>
-            <li></li>
-        </ul>
+    <div id="center">
+        <h1>Tic Tac Toe</h1>
         <div>
-            <button id="reset">Reset</button>
+            <h2 id="winner-display"></h2>
+            <ul>
+                <li></li>
+                <li></li>
+                <li></li>
+                <li></li>
+                <li></li>
+                <li></li>
+                <li></li>
+                <li></li>
+                <li></li>
+            </ul>
         </div>
+        <button id="reset">Reset</button>
     </div>
     <form id="player1">
-        <h3></h3>
+        <h3>Player 1</h3>
         <label for="player1-name">Player 1:</label>
         <input type="text" id="player1-name">
         <button data-player-index="0">Ok!</button>
     </form>
     <form id="player2">
-        <h3></h3>
+        <h3>Player 2</h3>
         <label for="player2-name">Player 2:</label>
         <input type="text" id="player2-name">
         <button data-player-index="1">Ok!</button>
     </form>
+
+    <footer>Made by <a href="https://github.com/maj-dan/tic-tac-toe">maj-dan</a></footer>
 
     <script src="./js/script.js"></script>
 </body>
