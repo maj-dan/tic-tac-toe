@@ -70,7 +70,7 @@ const gameboard = (function (){
 })();
 
 function makePlayer(name, char) {
-    const playerName = name;
+    let playerName = name;
     const marker = char;
 
     function getPlayerName(){
@@ -81,7 +81,11 @@ function makePlayer(name, char) {
         return marker;
     }
 
-    return {getMarker, getPlayerName};
+    function setPlayerName(newName){
+        playerName = newName;
+    }
+
+    return {getMarker, getPlayerName, setPlayerName};
 }
 
 const ticTacToe = (function(board){
@@ -115,6 +119,8 @@ const ticTacToe = (function(board){
         } else if (!board.checkEmptySpace()) {
             showWinner();
             board.resetBoard();
+        } else {
+            display.setWinnerText("");
         }
     }
 
@@ -145,9 +151,27 @@ const ticTacToe = (function(board){
     function resetGame() {
         board.resetBoard();
         display.render(board.getBoard());
+        display.setWinnerText("");
     }
 
-    return {play, resetGame};
+    function changePlayerName(event) {
+        event.preventDefault();
+
+        if (event.target.parentElement.querySelector("input").value === ""){
+            players[parseInt(event.target.dataset.playerIndex)]
+                .setPlayerName(`Player ${parseInt(
+                    event.target.dataset.playerIndex) + 1}`);
+        }else {
+            players[parseInt(event.target.dataset.playerIndex)]
+            .setPlayerName(event.target.parentElement.querySelector("input").value);
+        }
+
+        event.target.parentElement.querySelector("input").value = "";
+        event.target.parentElement.querySelector("h3").textContent = 
+            players[parseInt(event.target.dataset.playerIndex)].getPlayerName();
+    }
+
+    return {play, resetGame, changePlayerName};
 })(gameboard);
 
 const display = (function(){
@@ -155,9 +179,12 @@ const display = (function(){
     const board = document.querySelector("ul");
     const winnerDisplay = document.querySelector("#winner-display");
     const resetBtn = document.querySelector("#reset");
+    const playerNameBtns = document.querySelectorAll("form > button");
 
     board.addEventListener("click", ticTacToe.play);
     resetBtn.addEventListener("click", ticTacToe.resetGame);
+    playerNameBtns.forEach(playerBtn => playerBtn.addEventListener("click",
+         ticTacToe.changePlayerName));
 
     function render(boardContent){
         for(let i = 0; i < cells.length; i++){
