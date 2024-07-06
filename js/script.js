@@ -23,7 +23,50 @@ const gameboard = (function (){
         }
     }
 
-    return {setMarker, showBoard, getBoard, resetBoard};
+    function checkEmptySpace() {
+        for (row of boardGrid){
+            if(row.includes(null)) return true;
+        }
+        return false;
+    }
+
+    function checkRowEqual() {
+        //is there any row with equal chars, excluding null?
+        for (row of boardGrid){
+            if (row[0] === row[1] && row[0] === row[2] && row[0] !== null){
+                return true;
+            }
+        }
+        return false;
+    }
+
+    function checkColumnEqual() {
+        for (let i = 0; i < boardGrid.length; i++) {
+            if (boardGrid[0][i] === boardGrid[1][i] &&
+                boardGrid[0][i] === boardGrid[2][i] &&
+                boardGrid[0][i] !== null){
+                    return true;
+                }
+        }
+        return false;
+    }
+
+    function checkDiagonalEqual() {
+        if ((boardGrid[0][0] === boardGrid[1][1] && 
+            boardGrid[2][2] === boardGrid[1][1] ||
+            boardGrid[0][2] === boardGrid[1][1] &&
+            boardGrid[2][0] === boardGrid[1][1]) &&
+            boardGrid[1][1] !== null){
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    return {
+        setMarker, showBoard, getBoard, resetBoard, checkEmptySpace, checkRowEqual,
+        checkColumnEqual, checkDiagonalEqual
+        };
 })();
 
 function makePlayer(name, char) {
@@ -50,7 +93,7 @@ const ticTacToe = (function(board){
         if(event.target.tagName !== "LI") return;
 
         display.setData();
-        if(checkEmptySpace() && !hasWinner){
+        if(board.checkEmptySpace() && !hasWinner){
             const row = parseInt(event.target.dataset.row);
             const column = parseInt(event.target.dataset.column);
 
@@ -59,70 +102,42 @@ const ticTacToe = (function(board){
             }
 
             display.render(board.getBoard());
+        }
 
-            hasWinner = checkWin();
-            if (hasWinner){
-                //Who played the last turn won and deserves to start new round first
-                const indexOfWinner = playerIndexTurn === 0 ? 1 : 0;
-                showWinner(players[indexOfWinner]);
-                playerIndexTurn = indexOfWinner;
-                board.resetBoard();  
-                hasWinner = false;
-            }
+        hasWinner = checkWin();
+        if (hasWinner){
+            //Who played the last turn won and deserves to start new round first
+            const indexOfWinner = playerIndexTurn === 0 ? 1 : 0;
+            showWinner(players[indexOfWinner]);
+            playerIndexTurn = indexOfWinner;
+            board.resetBoard();  
+            hasWinner = false;
+        } else if (!board.checkEmptySpace()) {
+            showWinner();
+            board.resetBoard();
         }
     }
 
     function checkWin(){
-        const boardGrid = board.getBoard();
-        //win by closing row
-        for(row of boardGrid){
-            //ckeck if it's null, otherwise game ends in the start
-            if(checkRowEqual(row) && !(row.includes(null))){
-                return true;
-            }
-        }
-        //win by closing column
-        for(let column = 0; column < boardGrid.length; column++){
-            if(checkColumnEqual(boardGrid, column) && boardGrid[0][column] !== null){
-                    return true;
-            }
-        }
-        //win by closing diagonal
-        //the center cell is the same for both diagonals
-        if(checkDiagonalEqual(boardGrid) && !!boardGrid[1][1]){
+        if(board.checkRowEqual()) {
             return true;
         }
-        return false;
-    }
-
-    function checkRowEqual(row){
-        return row[0] === row[1] && row[0] === row[2];
-    }
-
-    function checkColumnEqual(boardGrid, column) {
-        return (boardGrid[0][column] === boardGrid[1][column] &&
-                boardGrid[0][column] === boardGrid[2][column]);
-    }
-
-    function checkDiagonalEqual(boardGrid){
-        return(boardGrid[0][0] === boardGrid[1][1] && 
-                boardGrid[2][2] === boardGrid[1][1] ||
-                boardGrid[0][2] === boardGrid[1][1] &&
-                boardGrid[2][0] === boardGrid[1][1]);
-    }
-
-    function checkEmptySpace() {
-        for (row of board.getBoard()){
-            if(row.includes(null)) return true;
+        
+        if (board.checkColumnEqual()){
+            return true;
+        };
+        
+        if(board.checkDiagonalEqual()){
+            return true;
         }
         return false;
     }
 
     function showWinner(winner){
         if(checkWin()){
-            console.log(`${winner.getPlayerName()} won!`);
+            display.setWinnerText(`${winner.getPlayerName()} won!`);
         } else {
-            console.log("It's a tie!");
+            display.setWinnerText("It's a tie!");
         }
         
     }
@@ -133,6 +148,7 @@ const ticTacToe = (function(board){
 const display = (function(){
     const cells = document.querySelectorAll("ul > li");
     const board = document.querySelector("ul");
+    const winnerDisplay = document.querySelector("#winner-display");
 
     board.addEventListener("click", ticTacToe.play);
 
@@ -149,5 +165,9 @@ const display = (function(){
         }
     }
 
-    return {render, setData};
+    function setWinnerText(text){
+        winnerDisplay.textContent = text;
+    }
+
+    return {render, setData, setWinnerText};
 })();
