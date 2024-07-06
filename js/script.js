@@ -142,15 +142,22 @@ const ticTacToe = (function(board){
         
     }
 
-    return {play};
+    function resetGame() {
+        board.resetBoard();
+        display.render(board.getBoard());
+    }
+
+    return {play, resetGame};
 })(gameboard);
 
 const display = (function(){
     const cells = document.querySelectorAll("ul > li");
     const board = document.querySelector("ul");
     const winnerDisplay = document.querySelector("#winner-display");
+    const resetBtn = document.querySelector("#reset");
 
     board.addEventListener("click", ticTacToe.play);
+    resetBtn.addEventListener("click", ticTacToe.resetGame);
 
     function render(boardContent){
         for(let i = 0; i < cells.length; i++){
